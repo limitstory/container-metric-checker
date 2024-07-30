@@ -91,56 +91,6 @@ func main() {
 	var pods *v1.PodList
 	var err error
 
-	var minMemoryUsagePercent float64 = 100.0
-	var maxMemoryUsagePercent float64 = 0
-	var totalMemoryUsagePercent float64 = 0
-	var iteration int64 = 0
-
-	var getMemoryArray []float64
-
-	// kubernetes api 클라이언트 생성하는 모듈
-	clientset := mod.InitClient()
-	if clientset == nil {
-		fmt.Println("Could not create client!")
-		os.Exit(-1)
-	}
-
-	for {
-		pods, err = clientset.CoreV1().Pods("default").List(context.TODO(), metav1.ListOptions{})
-		if err != nil {
-			panic(err)
-		}
-
-		if IsSucceed(pods.Items) == false {
-			get_memory := GetSystemMemoryStatsInfo()
-			iteration++
-
-			if minMemoryUsagePercent > get_memory.UsedPercent {
-				minMemoryUsagePercent = get_memory.UsedPercent
-			}
-			if maxMemoryUsagePercent < get_memory.UsedPercent {
-				maxMemoryUsagePercent = get_memory.UsedPercent
-			}
-			totalMemoryUsagePercent += get_memory.UsedPercent
-
-			getMemoryArray = append(getMemoryArray, get_memory.UsedPercent)
-
-			time.Sleep(time.Second)
-		} else {
-			break
-		}
-	}
-
-	if iteration == 0 {
-		fmt.Println("No Testing")
-	} else {
-		fmt.Println("minMemoryUsagePercent:", minMemoryUsagePercent)
-		fmt.Println("averagetotalMemoryUsagePercent:", float64(totalMemoryUsagePercent)/float64(iteration))
-		fmt.Println("maxMemoryUsagePercent:", maxMemoryUsagePercent)
-		fmt.Println("getMemoryArray:", getMemoryArray)
-
-	}
-
 	var podData []PodData
 	var runningTimeArr []int64
 	var waitTimeArr []int64
@@ -157,6 +107,26 @@ func main() {
 	var minContainerWaitTime int64 = 9999999999999
 	var maxContainerWaitTime int64 = 0
 	var totalContainerWaitTime int64 = 0
+
+	// kubernetes api 클라이언트 생성하는 모듈
+	clientset := mod.InitClient()
+	if clientset == nil {
+		fmt.Println("Could not create client!")
+		os.Exit(-1)
+	}
+
+	for {
+		pods, err = clientset.CoreV1().Pods("default").List(context.TODO(), metav1.ListOptions{})
+		if err != nil {
+			panic(err)
+		}
+
+		if IsSucceed(pods.Items) == false {
+			time.Sleep(time.Second)
+		} else {
+			break
+		}
+	}
 
 	for _, pod := range pods.Items {
 		var newPod PodData
