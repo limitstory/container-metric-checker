@@ -95,6 +95,8 @@ func main() {
 	var runningTimeArr []int64
 	var waitTimeArr []int64
 
+	var numOfWorkers int64 = 3
+
 	var startedTestTime int64 = 9999999999999
 	var finishedTestTime int64 = 0
 
@@ -184,7 +186,7 @@ func main() {
 		if err != nil {
 			bias, _ = strconv.ParseInt(pod.PodName[len(pod.PodName)-1:], 10, 64)
 		}
-		podData[i].WaitTime = pod.StartedAt - startedTestTime - bias
+		podData[i].WaitTime = pod.StartedAt - startedTestTime - bias/numOfWorkers
 
 		if minContainerWaitTime > pod.WaitTime {
 			minContainerWaitTime = pod.WaitTime
