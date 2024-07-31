@@ -182,11 +182,14 @@ func main() {
 	for i, pod := range podData {
 		var bias int64
 		var err error
-		bias, err = strconv.ParseInt(pod.PodName[len(pod.PodName)-2:], 10, 64)
+		bias, err = strconv.ParseInt(pod.PodName[len(pod.PodName)-3:], 10, 64)
 		if err != nil {
-			bias, _ = strconv.ParseInt(pod.PodName[len(pod.PodName)-1:], 10, 64)
+			bias, err = strconv.ParseInt(pod.PodName[len(pod.PodName)-2:], 10, 64)
+			if err != nil {
+				bias, _ = strconv.ParseInt(pod.PodName[len(pod.PodName)-1:], 10, 64)
+			}
 		}
-		podData[i].WaitTime = pod.StartedAt - startedTestTime - bias/numOfWorkers
+		podData[i].WaitTime = pod.StartedAt - startedTestTime - (bias / numOfWorkers)
 
 		if minContainerWaitTime > pod.WaitTime {
 			minContainerWaitTime = pod.WaitTime
