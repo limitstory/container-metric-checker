@@ -191,13 +191,13 @@ func main() {
 		}
 		podData[i].WaitTime = pod.StartedAt - startedTestTime - (bias / numOfWorkers)
 
-		if minContainerWaitTime > pod.WaitTime {
-			minContainerWaitTime = pod.WaitTime
+		if minContainerWaitTime > podData[i].WaitTime {
+			minContainerWaitTime = podData[i].WaitTime
 		}
-		if maxContainerWaitTime < pod.WaitTime {
-			maxContainerWaitTime = pod.WaitTime
+		if maxContainerWaitTime < podData[i].WaitTime {
+			maxContainerWaitTime = podData[i].WaitTime
 		}
-		totalContainerWaitTime += pod.WaitTime
+		totalContainerWaitTime += podData[i].WaitTime
 	}
 
 	for _, pod := range podData {
