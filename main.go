@@ -189,7 +189,7 @@ func main() {
 				bias, _ = strconv.ParseInt(pod.PodName[len(pod.PodName)-1:], 10, 64)
 			}
 		}
-		podData[i].WaitTime = pod.StartedAt - startedTestTime - (bias / numOfWorkers)
+		podData[i].WaitTime = pod.StartTime - startedTestTime - (bias / numOfWorkers)
 
 		if minContainerWaitTime > podData[i].WaitTime {
 			minContainerWaitTime = podData[i].WaitTime
